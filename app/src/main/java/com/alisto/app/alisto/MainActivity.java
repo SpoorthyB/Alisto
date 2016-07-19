@@ -1,5 +1,6 @@
 package com.alisto.app.alisto;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> itemsAdapter;
     ListView lvTodoList;
     EditText etEditText;
+    final int  REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
                 itemsAdapter.notifyDataSetChanged();
                 writeItems();
                 return true;
+            }
+        });
+        lvTodoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent in = new Intent(MainActivity.this,EditItemActivity.class);
+                in.putExtra("position",i);
+                in.putExtra("text",lvTodoList.getItemAtPosition(i).toString());
+                startActivityForResult(in, REQUEST_CODE);
             }
         });
     }
