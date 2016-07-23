@@ -86,6 +86,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+       // if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+            // Extract name value from result extras
+            String editValue = data.getExtras().getString("editValue");
+            int pos = data.getExtras().getInt("pos");
+            todoItems.set(pos,editValue);
+            itemsAdapter.notifyDataSetChanged();
+            writeItems();
+        //}
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds todoItems to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
