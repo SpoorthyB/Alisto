@@ -39,7 +39,7 @@ public class EditItemActivity extends AppCompatActivity {
         data.putExtra("code", 200); // ints work too
         data.putExtra("pos",getIntent().getIntExtra("position",-1));
         // Activity finished ok, return the data
-        setResult(20, data); // set result code and bundle data for response
+        setResult(-1, data); // set result code and bundle data for response
         finish(); // closes the activity, pass data to parent
     }
 

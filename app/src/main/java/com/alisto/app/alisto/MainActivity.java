@@ -1,5 +1,6 @@
 package com.alisto.app.alisto;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -88,14 +89,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // REQUEST_CODE is defined above
-       // if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
             // Extract name value from result extras
             String editValue = data.getExtras().getString("editValue");
             int pos = data.getExtras().getInt("pos");
             todoItems.set(pos,editValue);
             itemsAdapter.notifyDataSetChanged();
             writeItems();
-        //}
+        }
     }
 
     @Override
