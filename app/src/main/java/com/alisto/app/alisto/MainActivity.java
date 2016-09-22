@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,11 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import org.apache.commons.io.FileUtils;
+import com.activeandroid.ActiveAndroid;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,21 +41,23 @@ public class MainActivity extends AppCompatActivity {
         lvTodoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                String item = todoItems.get(position);
                 todoItems.remove(position);
                 itemsAdapter.notifyDataSetChanged();
-                writeItems();
+                deleteModelData(item);
                 return true;
             }
         });
         lvTodoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent in = new Intent(MainActivity.this,EditItemActivity.class);
-                in.putExtra("position",i);
-                in.putExtra("text",lvTodoList.getItemAtPosition(i).toString());
+                Intent in = new Intent(MainActivity.this, EditItemActivity.class);
+                in.putExtra("position", i);
+                in.putExtra("text", lvTodoList.getItemAtPosition(i).toString());
                 startActivityForResult(in, REQUEST_CODE);
             }
         });
+        ActiveAndroid.initialize(this);
     }
     public void populateArrayItems(){
         readitems();
@@ -64,26 +65,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readitems(){
-        File filesDir = getFilesDir();
-        File file = new File(filesDir,"todo.txt");
-        try{
-            todoItems = new ArrayList<String>(FileUtils.readLines(file));
-        }
-        catch(IOException e){
-            todoItems = new ArrayList<String>();
-            Log.d(String.valueOf(e),"readin items");
-        }
-    }
-    private void writeItems(){
-        File filesDir = getFilesDir();
-        File file = new File(filesDir,"todo.txt");
-        try{
-            FileUtils.writeLines(file,todoItems);
-        }
-        catch(IOException e){
-            e.printStackTrace();
+
+        TodoModel todos = new TodoModel();
+        todoItems = new ArrayList<String>();
+        List<TodoModel> queryResult = todos.getAll();
+        Iterator<TodoModel> iter = queryResult.iterator();
+        while(iter.hasNext()) {
+            todoItems.add((iter.next()).description.toString());
         }
 
+    }
+
+    private void setModelData(){
+        TodoModel todos = new TodoModel();
+
+        for (String todo:todoItems) {
+            todos.description = todo;
+            todos.save();
+        }
+    }
+
+    private void updateModelData(String prevValue, String desc){
+
+        TodoModel todos = new TodoModel();
+        TodoModel result = todos.findRowdesc(prevValue);
+        result.description = desc;
+        result.save();
+    }
+
+    private void deleteModelData(String desc){
+        TodoModel todos = new TodoModel();
+        todos.deleteItemDesc(desc);
     }
 
     @Override
@@ -93,9 +105,10 @@ public class MainActivity extends AppCompatActivity {
             // Extract name value from result extras
             String editValue = data.getExtras().getString("editValue");
             int pos = data.getExtras().getInt("pos");
-            todoItems.set(pos,editValue);
+            todoItems.set(pos, editValue);
             itemsAdapter.notifyDataSetChanged();
-            writeItems();
+            String prevValue = data.getExtras().getString("prevValue");
+            updateModelData(prevValue, editValue);
         }
     }
 
@@ -122,8 +135,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAddItem(View view) {
-        itemsAdapter.add(etEditText.getText().toString());
-        etEditText.setText("");
-        writeItems();
+        if(etEditText.getText().toString()!="") {
+            itemsAdapter.add(etEditText.getText().toString());
+            etEditText.setText("");
+            setModelData();
+        }
     }
 }

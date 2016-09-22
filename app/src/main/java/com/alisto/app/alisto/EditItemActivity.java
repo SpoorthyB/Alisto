@@ -12,6 +12,7 @@ import android.widget.EditText;
 public class EditItemActivity extends AppCompatActivity {
 
     EditText etEditTodo;
+    String prevValue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,8 +20,8 @@ public class EditItemActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         etEditTodo = (EditText)findViewById(R.id.etEditTodo);
-        String username = getIntent().getStringExtra("text");
-        etEditTodo.setText(username);
+        prevValue = getIntent().getStringExtra("text");
+        etEditTodo.setText(prevValue);
         etEditTodo.setSelection(etEditTodo.getText().length());
         Button btnEdit = (Button)findViewById(R.id.btnEdit);
         btnEdit.setOnClickListener(new OnClickListener() {
@@ -35,6 +36,7 @@ public class EditItemActivity extends AppCompatActivity {
         // Prepare data intent
         Intent data = new Intent();
         // Pass relevant data back as a result
+        data.putExtra("prevValue",prevValue);
         data.putExtra("editValue", etEditTodo.getText().toString());
         data.putExtra("code", 200); // ints work too
         data.putExtra("pos",getIntent().getIntExtra("position",-1));

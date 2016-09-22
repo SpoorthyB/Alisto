@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@drawable/bg_main_activity"
+    android:background="#e53935"
     tools:context="com.alisto.app.alisto.MainActivity">
 
     <android.support.design.widget.AppBarLayout

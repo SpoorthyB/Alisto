@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:background="@drawable/bg_main_activity"
+    android:background="#e53935"
     android:fitsSystemWindows="true"
     tools:context="com.alisto.app.alisto.EditItemActivity">
 
@@ -28,8 +28,7 @@
         android:ems="10"
         android:id="@+id/etEditTodo"
         android:layout_above="@+id/btnEdit"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -37,8 +36,8 @@
         android:text="@string/edit_button"
         android:id="@+id/btnEdit"
         style="@style/NiceButton"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="186dp" />
 
 </RelativeLayout>
