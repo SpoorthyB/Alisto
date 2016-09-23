@@ -1,6 +1,7 @@
 package com.alisto.app.alisto.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,17 @@ public class TodoAdapter extends ArrayAdapter<TodoModel> {
         }
         // Populate the data into the template view using the data object
         viewHolder.description.setText(item.description);
+        if (item.priority.contentEquals("HIGH")){
+            viewHolder.priority.setTextColor(Color.parseColor("#E91E63"));
+        }
+        else if(item.priority.contentEquals("MEDIUM")){
+            viewHolder.priority.setTextColor(Color.parseColor("#FFB300"));
+        }
+        else{
+            viewHolder.priority.setTextColor(Color.parseColor("#4DB6AC"));
+        }
         viewHolder.priority.setText(item.priority);
+
 
         return convertView;
     }

@@ -19,7 +19,7 @@
         android:id="@+id/btnNewToDo"
         style="@style/NiceButton"
         android:onClick="onAddItem"
-        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/etNewtodo"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -39,7 +39,20 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/svPriority"
+        android:hint="@string/add_item"
+        android:textColor="#000000" />
+
+    <Spinner
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/svPriority"
+        android:entries="@array/priority_array"
+        android:prompt="@string/priority_prompt"
+        android:gravity="top"
+        style="@style/Animation.AppCompat.DropDownUp"
+        android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/btnNewToDo"
         android:layout_toStartOf="@+id/btnNewToDo"
-        android:hint="@string/add_item" />
+        android:layout_marginBottom="10dp" />
 </RelativeLayout>

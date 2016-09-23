@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.activeandroid.ActiveAndroid;
 import com.alisto.app.alisto.Adapters.TodoAdapter;
@@ -18,7 +19,6 @@ import com.alisto.app.alisto.Models.TodoModel;
 import com.alisto.app.alisto.R;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     TodoAdapter itemsAdapter;
     ListView lvTodoList;
     EditText etEditText;
+    Spinner svPriority;
     final int  REQUEST_CODE = 20;
 
     @Override
@@ -55,18 +56,19 @@ public class MainActivity extends AppCompatActivity {
         });
         lvTodoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView adapterView, View view, int i, long l) {
                 Intent in = new Intent(MainActivity.this, EditItemActivity.class);
                 in.putExtra("position", i);
-                in.putExtra("text", lvTodoList.getItemAtPosition(i).toString());
+                in.putExtra("description", ((TodoModel) lvTodoList.getItemAtPosition(i)).description);
+                in.putExtra("priority", ((TodoModel) lvTodoList.getItemAtPosition(i)).priority);
                 startActivityForResult(in, REQUEST_CODE);
             }
         });
         ActiveAndroid.initialize(this);
     }
     public void populateArrayItems(){
-        //readitems();
-        todoItemRows = TodoModel.getMockTodos();
+        readitems();
+        //todoItemRows = TodoModel.getMockTodos();
         itemsAdapter = new TodoAdapter(this,todoItemRows);
     }
 
@@ -92,11 +94,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateModelData(String prevValue, String desc){
+    private void updateModelData(String prevValue, TodoModel obj){
 
         TodoModel todos = new TodoModel();
         TodoModel result = todos.findRowdesc(prevValue);
-        result.description = desc;
+        result.description = obj.description;
+        result.priority = obj.priority;
         result.save();
     }
 
@@ -110,12 +113,14 @@ public class MainActivity extends AppCompatActivity {
         // REQUEST_CODE is defined above
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
             // Extract name value from result extras
-            TodoModel editValue = new TodoModel("abc","HIGH",new Date()); //= data.getExtras().get("editValue");
+            String desc = data.getExtras().get("editValue").toString();
+            String priority = data.getExtras().get("editPriority").toString();
+            TodoModel editValue = new TodoModel(desc,priority,null);
             int pos = data.getExtras().getInt("pos");
             todoItemRows.set(pos, editValue);
             itemsAdapter.notifyDataSetChanged();
             String prevValue = data.getExtras().getString("prevValue");
-            //updateModelData(prevValue, editValue);
+            updateModelData(prevValue, editValue);
         }
     }
 
@@ -143,7 +148,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAddItem(View view) {
         if(etEditText.getText().toString()!="") {
-            itemsAdapter.add((TodoModel)etEditText.getText());
+
+            svPriority = ((Spinner)findViewById(R.id.svPriority));
+            itemsAdapter.add(new TodoModel(etEditText.getText().toString(),svPriority.getSelectedItem().toString(),null));
             etEditText.setText("");
             setModelData();
         }
