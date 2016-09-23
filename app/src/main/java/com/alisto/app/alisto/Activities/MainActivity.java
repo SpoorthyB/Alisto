@@ -1,4 +1,4 @@
-package com.alisto.app.alisto;
+package com.alisto.app.alisto.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,20 +9,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.activeandroid.ActiveAndroid;
+import com.alisto.app.alisto.Adapters.TodoAdapter;
+import com.alisto.app.alisto.Models.TodoModel;
+import com.alisto.app.alisto.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<String> todoItems;
-    ArrayAdapter<String> itemsAdapter;
+    //ArrayList<String> todoItems;
+    ArrayList<TodoModel> todoItemRows;
+    //ArrayAdapter<String> itemsAdapter;
+    TodoAdapter itemsAdapter;
     ListView lvTodoList;
     EditText etEditText;
     final int  REQUEST_CODE = 20;
@@ -41,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
         lvTodoList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-                String item = todoItems.get(position);
-                todoItems.remove(position);
+                TodoModel item = todoItemRows.get(position);
+                todoItemRows.remove(position);
                 itemsAdapter.notifyDataSetChanged();
-                deleteModelData(item);
+                deleteModelData(item.description);
                 return true;
             }
         });
@@ -60,18 +65,19 @@ public class MainActivity extends AppCompatActivity {
         ActiveAndroid.initialize(this);
     }
     public void populateArrayItems(){
-        readitems();
-        itemsAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, todoItems);
+        //readitems();
+        todoItemRows = TodoModel.getMockTodos();
+        itemsAdapter = new TodoAdapter(this,todoItemRows);
     }
 
     private void readitems(){
 
         TodoModel todos = new TodoModel();
-        todoItems = new ArrayList<String>();
+        todoItemRows = new ArrayList<TodoModel>();
         List<TodoModel> queryResult = todos.getAll();
         Iterator<TodoModel> iter = queryResult.iterator();
         while(iter.hasNext()) {
-            todoItems.add((iter.next()).description.toString());
+            todoItemRows.add((iter.next()));
         }
 
     }
@@ -79,8 +85,9 @@ public class MainActivity extends AppCompatActivity {
     private void setModelData(){
         TodoModel todos = new TodoModel();
 
-        for (String todo:todoItems) {
-            todos.description = todo;
+        for (TodoModel each:todoItemRows) {
+            todos.description = each.description;
+            todos.priority = each.priority;
             todos.save();
         }
     }
@@ -103,12 +110,12 @@ public class MainActivity extends AppCompatActivity {
         // REQUEST_CODE is defined above
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
             // Extract name value from result extras
-            String editValue = data.getExtras().getString("editValue");
+            TodoModel editValue = new TodoModel("abc","HIGH",new Date()); //= data.getExtras().get("editValue");
             int pos = data.getExtras().getInt("pos");
-            todoItems.set(pos, editValue);
+            todoItemRows.set(pos, editValue);
             itemsAdapter.notifyDataSetChanged();
             String prevValue = data.getExtras().getString("prevValue");
-            updateModelData(prevValue, editValue);
+            //updateModelData(prevValue, editValue);
         }
     }
 
@@ -136,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAddItem(View view) {
         if(etEditText.getText().toString()!="") {
-            itemsAdapter.add(etEditText.getText().toString());
+            itemsAdapter.add((TodoModel)etEditText.getText());
             etEditText.setText("");
             setModelData();
         }

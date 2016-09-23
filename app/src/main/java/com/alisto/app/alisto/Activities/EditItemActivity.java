@@ -1,4 +1,4 @@
-package com.alisto.app.alisto;
+package com.alisto.app.alisto.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.alisto.app.alisto.R;
 
 public class EditItemActivity extends AppCompatActivity {
 
